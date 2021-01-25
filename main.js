@@ -1,4 +1,11 @@
-import {shuffle} from './mechanics.js';
+import { shuffle } from "./mechanics.js";
+
+const CUBE_X = 10;
+const CUBE_Y = 150;
+const CUBE_WIDTH = 40;
+const CUBE_LENGTH = 40;
+const CARD_WIDTH = 60;
+const CARD_LENGTH = 80;
 
 var pantry = [];
 var deck = [];
@@ -14,8 +21,10 @@ function main() {
   prepareTable();
   console.log(pantry);
   console.log(deck);
-  
+
   drawDeck();
+  drawCube();
+  drawPantry();
 }
 
 function prepareTable() {
@@ -28,27 +37,45 @@ function prepareTable() {
 
 function drawCard(x, y) {
   ctx.beginPath();
-  ctx.rect(x, y, 40, 50);
-  ctx.fillStyle = "#FF0000";
+  ctx.rect(x, y, CARD_WIDTH, CARD_LENGTH);
+
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+
   // TODO: + border
   ctx.fill();
+  ctx.stroke();
   ctx.closePath();
 }
 
 function drawPantry() {
-
+  const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
+  const PANTRY_Y = 150;
+  const PANTRY_OFFSET = 10;
+  var x = PANTRY_X;
+  for (var i = 0; i < 6; i++) {
+    drawCard(x, PANTRY_Y);
+    x = x + CARD_WIDTH + PANTRY_OFFSET;
+  }
 }
 
 function drawDeck() {
-  drawCard(40, 50);
-  drawCard(45, 55);
+  const DECK_X = 10;
+  const DECK_Y = 10;
+  const DECK_OFFSET = 5;
+  drawCard(DECK_X, DECK_Y);
+  drawCard(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET);
 }
 
 function drawCube() {
   ctx.beginPath();
-  ctx.rect(x, y, 20, 20);
-  ctx.fillStyle = "#FFFFFF";
+  ctx.rect(CUBE_X, CUBE_Y, CUBE_LENGTH, CUBE_WIDTH);
+
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+
   // TODO: + cube points
   ctx.fill();
-  ctx.closePath();  
+  ctx.stroke();
+  ctx.closePath();
 }
