@@ -1,4 +1,4 @@
-import { shuffle } from "./mechanics.js";
+import { shuffle, getRandomCubeNumber } from "./mechanics.js";
 
 const CUBE_X = 10;
 const CUBE_Y = 150;
@@ -21,9 +21,9 @@ function main() {
   prepareTable();
   console.log(pantry);
   console.log(deck);
-
+  cubeNumber = getRandomCubeNumber()
   drawDeck();
-  drawCube();
+  drawCube(cubeNumber);
   drawPantry();
 }
 
@@ -67,7 +67,7 @@ function drawDeck() {
   drawCard(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET);
 }
 
-function drawCube() {
+function drawCube(num) {
   ctx.beginPath();
   ctx.rect(CUBE_X, CUBE_Y, CUBE_LENGTH, CUBE_WIDTH);
 

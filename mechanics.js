@@ -47,4 +47,8 @@ function shuffle() {
   return shuffledCards
 }
 
-export {shuffle};
+function getRandomCubeNumber() {
+  return Math.floor(Math.random() * Math.floor(6));
+}
+
+export {shuffle, getRandomCubeNumber};
