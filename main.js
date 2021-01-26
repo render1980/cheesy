@@ -1,5 +1,6 @@
-import { shuffle, getRandomCubeNumber } from "./mechanics.js";
+import { getRandomCubeNumber, shuffle } from "./mechanics.js";
 
+const PANTRY_SIZE = 6;
 const CUBE_X = 10;
 const CUBE_Y = 150;
 const CUBE_WIDTH = 40;
@@ -35,26 +36,13 @@ function prepareTable() {
   deck = cards.slice(6, cards.length);
 }
 
-function drawCard(x, y) {
-  ctx.beginPath();
-  ctx.rect(x, y, CARD_WIDTH, CARD_LENGTH);
-
-  ctx.fillStyle = "white";
-  ctx.strokeStyle = "black";
-
-  // TODO: + border
-  ctx.fill();
-  ctx.stroke();
-  ctx.closePath();
-}
-
 function drawPantry() {
   const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
-  const PANTRY_Y = 150;
+  const PANTRY_Y = CUBE_Y;
   const PANTRY_OFFSET = 10;
   var x = PANTRY_X;
-  for (var i = 0; i < 6; i++) {
-    drawCard(x, PANTRY_Y);
+  for (var i = 0; i < PANTRY_SIZE; i++) {
+    drawCard(x, PANTRY_Y, pantry[i].value);
     x = x + CARD_WIDTH + PANTRY_OFFSET;
   }
 }
@@ -63,8 +51,8 @@ function drawDeck() {
   const DECK_X = 10;
   const DECK_Y = 10;
   const DECK_OFFSET = 5;
-  drawCard(DECK_X, DECK_Y);
-  drawCard(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET);
+  drawCard(DECK_X, DECK_Y, getRandomCubeNumber());
+  drawCard(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET, getRandomCubeNumber());
 }
 
 function drawCube(num) {
@@ -75,4 +63,14 @@ function drawCube(num) {
     ctx.stroke();
   };
   img.src = "./images/cube" + num + ".png";
+}
+
+function drawCard(x, y, num) {
+  var img = new Image(CARD_WIDTH, CARD_LENGTH);
+  img.onload = function () {
+    ctx.drawImage(img, x, y);
+    ctx.beginPath();
+    ctx.stroke();
+  };
+  img.src = "./images/card" + num + ".png";
 }
