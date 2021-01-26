@@ -21,7 +21,7 @@ function main() {
   prepareTable();
   console.log(pantry);
   console.log(deck);
-  cubeNumber = getRandomCubeNumber()
+  var cubeNumber = getRandomCubeNumber();
   drawDeck();
   drawCube(cubeNumber);
   drawPantry();
@@ -68,14 +68,11 @@ function drawDeck() {
 }
 
 function drawCube(num) {
-  ctx.beginPath();
-  ctx.rect(CUBE_X, CUBE_Y, CUBE_LENGTH, CUBE_WIDTH);
-
-  ctx.fillStyle = "white";
-  ctx.strokeStyle = "black";
-
-  // TODO: + cube points
-  ctx.fill();
-  ctx.stroke();
-  ctx.closePath();
+  var img = new Image(CUBE_WIDTH, CUBE_LENGTH);
+  img.onload = function () {
+    ctx.drawImage(img, CUBE_X, CUBE_Y);
+    ctx.beginPath();
+    ctx.stroke();
+  };
+  img.src = "./images/cube" + num + ".png";
 }
