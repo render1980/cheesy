@@ -1,9 +1,11 @@
-import { getRandomCubeNumber, shuffle } from "./mechanics.js";
-// Table objects
-var pantry = [];
-var deck = [];
-var discard = [];
-var cubeValue = 0;
+import {
+  getRandomCubeNumber,
+  prepareTable,
+  getPantry,
+  getDeck,
+  getCubePressed,
+  setCubePressed,
+} from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
 var ctx = canvas.getContext("2d");
@@ -15,15 +17,13 @@ const CUBE_WIDTH = 40;
 const CUBE_LENGTH = 40;
 const CARD_WIDTH = 60;
 const CARD_LENGTH = 80;
-// states
-var cubePressed = false;
 
 main();
 
 function main() {
   prepareTable();
-  console.log(pantry);
-  console.log(deck);
+  console.log(getPantry());
+  console.log(getDeck());
   drawDeck();
 
   var cubeNumber = getRandomCubeNumber();
@@ -35,14 +35,6 @@ function main() {
 
 function addEventListeners() {
   document.addEventListener("mousedown", onCubeMouseClick, false);
-}
-
-function prepareTable() {
-  var cards = shuffle();
-  // first 6 -> Pantry
-  pantry = cards.slice(0, 6);
-  // others -> Deck
-  deck = cards.slice(6, cards.length);
 }
 
 function drawDeck() {
@@ -70,7 +62,7 @@ function drawPantry() {
   const PANTRY_OFFSET = 10;
   var x = PANTRY_X;
   for (var i = 0; i < PANTRY_SIZE; i++) {
-    drawCard(x, PANTRY_Y, pantry[i].value);
+    drawCard(x, PANTRY_Y, getPantry()[i].value);
     x = x + CARD_WIDTH + PANTRY_OFFSET;
   }
 }
@@ -86,7 +78,10 @@ function drawCard(x, y, num) {
 }
 
 function onCubeMouseClick(e) {
-  cubePressed = true;
+  if (getCubePressed()) {
+    return;
+  }
+  setCubePressed(true);
   var cubeNumber = getRandomCubeNumber();
   drawCube(cubeNumber);
 }

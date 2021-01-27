@@ -37,8 +37,40 @@ const cards = [
   { value: 6, catch: false },
 ];
 
+// Table objects
+var pantry = [];
+var deck = [];
+var discard = [];
+var cubeValue = 0;
+// states
+var cubePressed = false;
+
+function prepareTable() {
+  var cards = shuffle();
+  // first 6 -> Pantry
+  pantry = cards.slice(0, 6);
+  // others -> Deck
+  deck = cards.slice(6, cards.length);
+}
+
 function getCards() {
   return cards;
+}
+
+function getPantry() {
+  return pantry;
+}
+
+function getDeck() {
+  return deck;
+}
+
+function getCubePressed() {
+  return cubePressed;
+}
+
+function setCubePressed(pressed) {
+  cubePressed = pressed;
 }
 
 function shuffle() {
@@ -51,4 +83,12 @@ function getRandomCubeNumber() {
   return Math.floor(Math.random() * Math.floor(7));
 }
 
-export { shuffle, getRandomCubeNumber };
+export {
+  shuffle,
+  getRandomCubeNumber,
+  prepareTable,
+  getPantry,
+  getDeck,
+  getCubePressed,
+  setCubePressed
+};
