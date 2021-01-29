@@ -44,6 +44,7 @@ var discard = [];
 var cubeValue = 0;
 // states
 var cubePressed = false;
+var watchedCardFromPantry = false;
 
 function prepareTable() {
   var cards = shuffle();
@@ -59,6 +60,13 @@ function getCards() {
 
 function getPantry() {
   return pantry;
+}
+
+function getCardFromPantry(idx) {
+  if (watchedCardFromPantry) {
+    return;
+  }
+  return pantry[idx];
 }
 
 function getDeck() {
@@ -90,5 +98,6 @@ export {
   getPantry,
   getDeck,
   getCubePressed,
-  setCubePressed
+  setCubePressed,
+  getCardFromPantry,
 };

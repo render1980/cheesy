@@ -5,6 +5,7 @@ import {
   getDeck,
   getCubePressed,
   setCubePressed,
+  getCardFromPantry,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
@@ -35,14 +36,15 @@ function main() {
 
 function addEventListeners() {
   document.addEventListener("mousedown", onCubeMouseClick, false);
+  document.addEventListener("", onPantryCardOver, false);
 }
 
 function drawDeck() {
   const DECK_X = 10;
   const DECK_Y = 10;
   const DECK_OFFSET = 5;
-  drawCard(DECK_X, DECK_Y, getRandomCubeNumber());
-  drawCard(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET, getRandomCubeNumber());
+  drawCardNum(DECK_X, DECK_Y, getRandomCubeNumber());
+  drawCardNum(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET, getRandomCubeNumber());
 }
 
 function drawCube(num) {
@@ -62,12 +64,12 @@ function drawPantry() {
   const PANTRY_OFFSET = 10;
   var x = PANTRY_X;
   for (var i = 0; i < PANTRY_SIZE; i++) {
-    drawCard(x, PANTRY_Y, getPantry()[i].value);
+    drawCardNum(x, PANTRY_Y, getPantry()[i].value);
     x = x + CARD_WIDTH + PANTRY_OFFSET;
   }
 }
 
-function drawCard(x, y, num) {
+function drawCardNum(x, y, num) {
   var img = new Image(CARD_WIDTH, CARD_LENGTH);
   img.onload = function () {
     ctx.drawImage(img, x, y);
@@ -77,6 +79,11 @@ function drawCard(x, y, num) {
   img.src = "./images/card" + num + ".png";
 }
 
+function drawCard(x, y, ) {
+
+}
+
+// HANDLERS
 function onCubeMouseClick(e) {
   if (getCubePressed()) {
     return;
@@ -84,4 +91,10 @@ function onCubeMouseClick(e) {
   setCubePressed(true);
   var cubeNumber = getRandomCubeNumber();
   drawCube(cubeNumber);
+}
+
+function onPantryCardOver(e) {
+  // get idx of a card: idx = e.?
+  idx = 0;
+  var card = getCardFromPantry(idx);
 }
