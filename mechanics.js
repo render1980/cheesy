@@ -45,6 +45,7 @@ var cubeValue = 0;
 // states
 var cubePressed = false;
 var watchedCardFromPantry = false;
+var cubeNumber = 0;
 
 function prepareTable() {
   var cards = shuffle();
@@ -81,6 +82,10 @@ function setCubePressed(pressed) {
   cubePressed = pressed;
 }
 
+function setPlayerCubeNumber(num) {
+  cubeNumber = num;
+}
+
 function shuffle() {
   let shuffledCards = getCards().sort(() => Math.random() - 0.666);
   console.log(shuffledCards);
@@ -100,4 +105,5 @@ export {
   getCubePressed,
   setCubePressed,
   getCardFromPantry,
+  setPlayerCubeNumber
 };

@@ -5,6 +5,7 @@ import {
   getDeck,
   getCubePressed,
   setCubePressed,
+  setPlayerCubeNumber,
   getCardFromPantry,
 } from "./mechanics.js";
 
@@ -29,7 +30,6 @@ function main() {
 
   var cubeNumber = getRandomCubeNumber();
   drawCube(cubeNumber);
-
   drawPantry();
   addEventListeners();
 }
@@ -44,7 +44,11 @@ function drawDeck() {
   const DECK_Y = 10;
   const DECK_OFFSET = 5;
   drawCardNum(DECK_X, DECK_Y, getRandomCubeNumber());
-  drawCardNum(DECK_X + DECK_OFFSET, DECK_Y + DECK_OFFSET, getRandomCubeNumber());
+  drawCardNum(
+    DECK_X + DECK_OFFSET,
+    DECK_Y + DECK_OFFSET,
+    getRandomCubeNumber()
+  );
 }
 
 function drawCube(num) {
@@ -53,7 +57,7 @@ function drawCube(num) {
   img.onload = function () {
     ctx.drawImage(img, CUBE_X, CUBE_Y);
     ctx.beginPath();
-    ctx.stroke();
+    ctx.strokeRect(CUBE_X, CUBE_Y, CUBE_WIDTH, CUBE_LENGTH);
   };
   img.src = "./images/cube" + num + ".png";
 }
@@ -74,14 +78,13 @@ function drawCardNum(x, y, num) {
   img.onload = function () {
     ctx.drawImage(img, x, y);
     ctx.beginPath();
-    ctx.stroke();
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, CARD_WIDTH, CARD_LENGTH);
   };
   img.src = "./images/card" + num + ".png";
 }
 
-function drawCard(x, y, ) {
-
-}
+function drawCard(x, y) {}
 
 // HANDLERS
 function onCubeMouseClick(e) {
@@ -90,6 +93,7 @@ function onCubeMouseClick(e) {
   }
   setCubePressed(true);
   var cubeNumber = getRandomCubeNumber();
+  setPlayerCubeNumber(cubeNumber);
   drawCube(cubeNumber);
 }
 
