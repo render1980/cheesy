@@ -31,12 +31,24 @@ function main() {
   var cubeNumber = getRandomCubeNumber();
   drawCube(cubeNumber);
   drawPantry();
-  addEventListeners();
+  addDocumentEventListeners();
+  firstText();
 }
 
-function addEventListeners() {
-  document.addEventListener("mousedown", onCubeMouseClick, false);
+function addDocumentEventListeners() {
+  document.addEventListener("mousedown", onMouseClick, false);
   document.addEventListener("", onPantryCardOver, false);
+}
+
+function firstText() {
+  text = "Hi! Let's play the cheesy!\n";
+  text += "Here will be hints.\n";
+  text += " First, roll the dice! To do it press mouse button.";
+  drawText(text);
+}
+
+function drawText(text) {
+  document.getElementById("text").innerText = text;
 }
 
 function drawDeck() {
@@ -59,6 +71,7 @@ function drawCube(num) {
     ctx.beginPath();
     ctx.strokeRect(CUBE_X, CUBE_Y, CUBE_WIDTH, CUBE_LENGTH);
   };
+
   img.src = "./images/cube" + num + ".png";
 }
 
@@ -87,8 +100,9 @@ function drawCardNum(x, y, num) {
 function drawCard(x, y) {}
 
 // HANDLERS
-function onCubeMouseClick(e) {
+function onMouseClick() {
   if (getCubePressed()) {
+    // TODO: other logic
     return;
   }
   setCubePressed(true);
