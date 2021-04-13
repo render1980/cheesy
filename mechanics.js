@@ -37,15 +37,51 @@ const cards = [
   { value: 6, catch: false },
 ];
 
+const texts = [
+  "Hi! Let's play the Cheesy! \
+  Here will be hints. \
+  First, roll the dice! Press mouse to do it.",
+
+  "Great! Now you can take any card from pantry and watch it. \
+  Please, press a keyboard button [1..6] that is the card position (from the left).",
+
+  "Great! There is at least one card in pantry which value is related to the cube value. \
+  You can choose any of two options: \
+  1. Take such card to your hand. \
+  2. Remove such card from the game. \
+  Please, press a keyboard button [1..2] to choose the action.",
+
+  "Please, press a keyboard button [1..6] that is the position (from the left) \
+  of the card you want to take to your hand.",
+
+  "Please, press a keyboard button [1..6] that is the position (from the left) \
+  of the card you want to remove from the game."
+];
+
+/**
+* 0 - Beginning of the round
+* 1 - Watch a card from entry
+* 2 - Take to the hand / remove a card from the game
+* 3 - Take a card to the hand
+* 4 - Remove a card from the game
+*/
+var curState = 0;
+
+function getCurrentText() {
+  return texts[curState];
+}
+
+function getCurrentState() {
+  return curState;
+}
+
 // Table objects
 var pantry = [];
 var deck = [];
 var discard = [];
-var cubeValue = 0;
-// states
+// State
 var cubePressed = false;
-var watchedCardFromPantry = false;
-var cubeNumber = 0;
+
 
 function prepareTable() {
   var cards = shuffle();
@@ -64,9 +100,6 @@ function getPantry() {
 }
 
 function getCardFromPantry(idx) {
-  if (watchedCardFromPantry) {
-    return;
-  }
   return pantry[idx];
 }
 
@@ -80,6 +113,22 @@ function getCubePressed() {
 
 function setCubePressed(pressed) {
   cubePressed = pressed;
+}
+
+function pressCube() {
+  setCubePressed(true);
+  var cubeNumber = getRandomCubeNumber();
+  setPlayerCubeNumber(cubeNumber);
+  // When cube is pressed, check if any card with {cubeNumber} in pantry exists
+  let pantryCardsWithCubeValue = getPantry().filter(v => v.value == cubeNumber);
+  if (pantryCardsWithCubeValue.length > 0) {
+    // Player can take related card to hand or remove it from the game
+    curState += 2;
+  } else {
+    // Player should take any card from pantry and watch it
+    curState += 1;
+  }
+  return cubeNumber;
 }
 
 function setPlayerCubeNumber(num) {
@@ -96,14 +145,21 @@ function getRandomCubeNumber() {
   return Math.floor(Math.random() * Math.floor(7));
 }
 
+function chooseTakeOrRemove(num) {
+  if (num == 1 || num == 2) {
+    curState += num;
+  }
+  return texts[curState];
+}
+
 export {
-  shuffle,
   getRandomCubeNumber,
   prepareTable,
   getPantry,
   getDeck,
   getCubePressed,
-  setCubePressed,
-  getCardFromPantry,
-  setPlayerCubeNumber
+  pressCube,
+  getCurrentText,
+  getCurrentState,
+  chooseTakeOrRemove
 };

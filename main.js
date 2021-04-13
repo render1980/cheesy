@@ -4,9 +4,10 @@ import {
   getPantry,
   getDeck,
   getCubePressed,
-  setCubePressed,
-  setPlayerCubeNumber,
-  getCardFromPantry,
+  getCurrentText,
+  getCurrentState,
+  pressCube,
+  chooseTakeOrRemove,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
@@ -26,25 +27,18 @@ function main() {
   prepareTable();
   console.log(getPantry());
   console.log(getDeck());
-  drawDeck();
 
-  var cubeNumber = getRandomCubeNumber();
-  drawCube(cubeNumber);
+  drawDeck();
+  drawCube(getRandomCubeNumber());
   drawPantry();
+  drawText(getCurrentText());
+
   addDocumentEventListeners();
-  firstText();
 }
 
 function addDocumentEventListeners() {
   document.addEventListener("mousedown", onMouseClick, false);
-  document.addEventListener("", onPantryCardOver, false);
-}
-
-function firstText() {
-  text = "Hi! Let's play the cheesy!\n";
-  text += "Here will be hints.\n";
-  text += " First, roll the dice! To do it press mouse button.";
-  drawText(text);
+  document.addEventListener("keydown", onKeydown, false);
 }
 
 function drawText(text) {
@@ -97,22 +91,85 @@ function drawCardNum(x, y, num) {
   img.src = "./images/card" + num + ".png";
 }
 
-function drawCard(x, y) {}
-
 // HANDLERS
 function onMouseClick() {
   if (getCubePressed()) {
-    // TODO: other logic
     return;
   }
-  setCubePressed(true);
-  var cubeNumber = getRandomCubeNumber();
-  setPlayerCubeNumber(cubeNumber);
-  drawCube(cubeNumber);
+  drawCube(pressCube());
+  drawText(getCurrentText());
 }
 
-function onPantryCardOver(e) {
-  // get idx of a card: idx = e.?
-  idx = 0;
-  var card = getCardFromPantry(idx);
+function onKeydown(event) {
+  num = event.code - 48;
+  if (num < 1 || num > 6) {
+    return;
+  }
+  next(num);
+}
+
+function next(num) {
+  let curState = getCurrentState();
+  switch (curState) {
+    case 1:
+      watchCard(num);
+      break;
+    case 2:
+      chooseTakeOrRemove(num);
+      break;
+    case 3:
+      takeToHand(num);
+      break;
+    case 4:
+      remove(num);
+      break;
+  }
+}
+
+function watchCard(num) {
+  let pantryCards = getPantry();
+  let cardIdxToWatch = num - 1;
+  let cardToWatch = pantryCards[cardIdxToWatch];
+  // get card coordinates
+  drawBorder(x, y, cardIdxToWatch);
+  // sleep 2
+  drawBottom(x, y, cardToWatch);
+  // sleep 3
+  drawCardNum(x, y, cardToWatch.value);
+}
+
+function drawBorder(x, y, idx) {
+  // calculate coordinates of the card and draw a border around it
+}
+
+function drawBottom(x, y, card) {
+  let isCatch = card.catch;
+  if (isCatch) {
+    // draw a card with catch
+  } else {
+    // draw a card without catch
+  }
+}
+
+function takeToHand(num) {
+  let pantryCards = getPantry();
+  let cardIdxToTake = num - 1;
+  let cardToTake = pantryCards[cardIdxToTake];
+  // calc coordinates of the card in pantry
+  // clear card in pantry
+  // draw card in a hand space
+  // playerCard += this card
+  // pantry cards -= this card
+  // reset state -> 0
+}
+
+function remove(num) {
+  let pantryCards = getPantry();
+  let cardIdxToTake = num - 1;
+  let cardToRemove = pantryCards[cardIdxToTake];
+  // calc coordinates of the card in pantry
+  // clear card in pantry
+  // discard += this card
+  // pantry cards -= this card
+  // reset state -> 0
 }
