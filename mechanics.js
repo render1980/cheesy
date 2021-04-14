@@ -58,6 +58,8 @@ const texts = [
   of the card you want to remove from the game."
 ];
 
+const PANTRY_CARDS_COUNT = 6;
+
 /**
 * 0 - Beginning of the round
 * 1 - Watch a card from entry
@@ -66,15 +68,6 @@ const texts = [
 * 4 - Remove a card from the game
 */
 var curState = 0;
-
-function getCurrentText() {
-  return texts[curState];
-}
-
-function getCurrentState() {
-  return curState;
-}
-
 // Table objects
 var pantry = [];
 var deck = [];
@@ -89,6 +82,27 @@ function prepareTable() {
   pantry = cards.slice(0, 6);
   // others -> Deck
   deck = cards.slice(6, cards.length);
+}
+
+function newRound() {
+  curState = 0;
+  cubePressed = false;
+  // if pantry hasn't got enough cards => put required amount of cards to the pantry
+  let pantryCards = getPantry();
+  if (pantryCards.length < PANTRY_CARDS_COUNT) {
+    for (var i = 0; i < PANTRY_CARDS_COUNT - pantryCards.length; i++) {
+      newCard = deck.pop();
+      pantry.push(newCard);
+    }
+  }
+}
+
+function getCurrentText() {
+  return texts[curState];
+}
+
+function getCurrentState() {
+  return curState;
 }
 
 function getCards() {
@@ -161,5 +175,6 @@ export {
   pressCube,
   getCurrentText,
   getCurrentState,
-  chooseTakeOrRemove
+  chooseTakeOrRemove,
+  newRound
 };

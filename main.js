@@ -8,6 +8,7 @@ import {
   getCurrentState,
   pressCube,
   chooseTakeOrRemove,
+  newRound,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
@@ -105,10 +106,10 @@ function onKeydown(event) {
   if (num < 1 || num > 6) {
     return;
   }
-  next(num);
+  nextState(num);
 }
 
-function next(num) {
+function nextState(num) {
   let curState = getCurrentState();
   switch (curState) {
     case 1:
