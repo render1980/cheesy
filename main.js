@@ -102,7 +102,7 @@ function onMouseClick() {
 }
 
 function onKeydown(event) {
-  num = event.code - 48;
+  let num = event.keyCode - 48;
   if (num < 1 || num > 6) {
     return;
   }

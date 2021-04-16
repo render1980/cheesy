@@ -42,19 +42,19 @@ const texts = [
   Here will be hints. \
   First, roll the dice! Press mouse to do it.",
 
-  "Great! Now you can take any card from pantry and watch it. \
+  "Great! Now you can take any card from pantry and watch it.\n\
   Please, press a keyboard button [1..6] that is the card position (from the left).",
 
   "Great! There is at least one card in pantry which value is related to the cube value. \
-  You can choose any of two options: \
-  1. Take such card to your hand. \
-  2. Remove such card from the game. \
+  You can choose any of two options: \n\
+  1. Take such card to your hand. \n\
+  2. Remove such card from the game. \n\
   Please, press a keyboard button [1..2] to choose the action.",
 
-  "Please, press a keyboard button [1..6] that is the position (from the left) \
+  "Please, press a keyboard button [1..6] that is the position (from the left)\n\
   of the card you want to take to your hand.",
 
-  "Please, press a keyboard button [1..6] that is the position (from the left) \
+  "Please, press a keyboard button [1..6] that is the position (from the left)\n\
   of the card you want to remove from the game."
 ];
 
@@ -131,8 +131,8 @@ function setCubePressed(pressed) {
 
 function pressCube() {
   setCubePressed(true);
-  var cubeNumber = getRandomCubeNumber();
-  setPlayerCubeNumber(cubeNumber);
+  let cubeNumber = getRandomCubeNumber();
+  //setPlayerCubeNumber(cubeNumber);
   // When cube is pressed, check if any card with {cubeNumber} in pantry exists
   let pantryCardsWithCubeValue = getPantry().filter(v => v.value == cubeNumber);
   if (pantryCardsWithCubeValue.length > 0) {
@@ -145,9 +145,9 @@ function pressCube() {
   return cubeNumber;
 }
 
-function setPlayerCubeNumber(num) {
-  cubeNumber = num;
-}
+//function setPlayerCubeNumber(num) {
+  //cubeNumber = num;
+//}
 
 function shuffle() {
   let shuffledCards = getCards().sort(() => Math.random() - 0.666);
