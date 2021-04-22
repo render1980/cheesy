@@ -10,20 +10,28 @@ import {
   chooseTakeOrRemove,
   newRound,
   resetState,
+  takeToHand,
+  removeFromEntry,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
 var ctx = canvas.getContext("2d");
 var hintsEnabled = true;
 // objects parameters
-const PANTRY_SIZE = 6;
+
 const CUBE_X = 10;
 const CUBE_Y = 150;
 const CUBE_WIDTH = 40;
 const CUBE_LENGTH = 40;
+const PANTRY_SIZE = 6;
+const PANTRY_Y = CUBE_Y;
+const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
+const PANTRY_OFFSET = 10;
 const CARD_WIDTH = 60;
 const CARD_LENGTH = 80;
-const PANTRY_OFFSET = 10;
+const HIGHLIGHTED_CARD_BORDER_WIDTH = 4;
+const HAND_Y = CUBE_Y * 2 + CARD_LENGTH;
+const HAND_X = PANTRY_X;
 
 main();
 
@@ -35,7 +43,9 @@ function main() {
   drawDeck();
   drawCube(getRandomCubeNumber());
   drawPantry();
-  drawText(getCurrentText());
+  drawText(
+    "Let's play cheesy!\nHere will be hints.\nFirst, please roll the dice! Press mouse to do it."
+  );
 
   addDocumentEventListeners();
 }
@@ -77,8 +87,6 @@ function drawCube(num) {
 }
 
 function drawPantry() {
-  const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
-  const PANTRY_Y = CUBE_Y;
   var x = PANTRY_X;
   for (var i = 0; i < PANTRY_SIZE; i++) {
     drawCardNum(x, PANTRY_Y, getPantry()[i].value);
@@ -89,10 +97,11 @@ function drawPantry() {
 function drawCardNum(x, y, num) {
   var img = new Image(CARD_WIDTH, CARD_LENGTH);
   img.onload = function () {
+    clearCard(x, y);
     ctx.drawImage(img, x, y);
     ctx.beginPath();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "none";
+    ctx.strokeStyle = "black";
     ctx.strokeRect(x, y, CARD_WIDTH, CARD_LENGTH);
   };
   img.src = "./images/card" + num + ".png";
@@ -103,7 +112,7 @@ function drawCardNumHighlighted(x, y, num) {
   img.onload = function () {
     ctx.drawImage(img, x, y);
     ctx.beginPath();
-    ctx.lineWidth = 4;
+    ctx.lineWidth = HIGHLIGHTED_CARD_BORDER_WIDTH;
     ctx.strokeStyle = "red";
     ctx.strokeRect(x, y, CARD_WIDTH, CARD_LENGTH);
   };
@@ -128,6 +137,15 @@ function drawCardBottom(x, y, isCatch) {
   img.src = "./images/card_" + name + ".png";
 }
 
+function clearCard(x, y) {
+  ctx.clearRect(
+    x - 2,
+    y - 2,
+    CARD_WIDTH + HIGHLIGHTED_CARD_BORDER_WIDTH,
+    CARD_LENGTH + HIGHLIGHTED_CARD_BORDER_WIDTH
+  );
+}
+
 // HANDLERS
 function onMouseClick() {
   if (getCubePressed()) {
@@ -149,28 +167,26 @@ function next(num) {
   let curState = getCurrentState();
   switch (curState) {
     case 1:
-      watchCard(num);
+      drawWatchCard(num);
       drawText(resetState());
       break;
     case 2:
       drawText(chooseTakeOrRemove(num));
       break;
     case 3:
-      takeToHand(num);
+      drawTakeToHand(num);
       break;
     case 4:
-      remove(num);
+      drawRemove(num);
       break;
   }
 }
 
-function watchCard(num) {
+function drawWatchCard(num) {
   let pantryCards = getPantry();
   let cardIdxToWatch = num - 1;
   let cardToWatch = pantryCards[cardIdxToWatch];
-  // get card coordinates
-  const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
-  const PANTRY_Y = CUBE_Y;
+
   let cardX =
     PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
   setTimeout(function () {
@@ -186,25 +202,30 @@ function watchCard(num) {
   }, 5000);
 }
 
-function takeToHand(num) {
+function drawTakeToHand(num) {
   let pantryCards = getPantry();
   let cardIdxToTake = num - 1;
   let cardToTake = pantryCards[cardIdxToTake];
   // calc coordinates of the card in pantry
+  let cardX =
+    PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
   // clear card in pantry
-  // draw card in a hand space
-  // playerCard += this card
-  // pantry cards -= this card
-  // reset state -> 0
+  clearCard(cardX, PANTRY_Y);
+  // draw card in a hand
+  drawCardBottom(HAND_X, HAND_Y, cardToTake.catch);
+  takeToHand(cardIdxToTake);
+  drawText(getCurrentText());
 }
 
-function remove(num) {
+function drawRemove(num) {
   let pantryCards = getPantry();
   let cardIdxToTake = num - 1;
   let cardToRemove = pantryCards[cardIdxToTake];
-  // calc coordinates of the card in pantry
+  let cardX =
+    PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
   // clear card in pantry
-  // discard += this card
-  // pantry cards -= this card
-  // reset state -> 0
+  clearCard(cardX, PANTRY_Y);
+  removeFromEntry(cardIdxToTake);
+  // draw new card in pantry taken from deck
+  drawText(getCurrentText());
 }

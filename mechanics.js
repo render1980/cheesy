@@ -38,9 +38,8 @@ const cards = [
 ];
 
 const texts = [
-  "Hi! Let's play the Cheesy!\n\
-  Here will be hints.\n\
-  First, roll the dice! Press mouse to do it.",
+  "New round has started!\n\
+  Roll the dice! Press mouse to do it.",
 
   "Great! Now you can take any card from pantry and watch it.\n\
   Please, press a keyboard button [1..6] that is the card position (from the left).",
@@ -72,6 +71,7 @@ var curState = 0;
 var pantry = [];
 var deck = [];
 var discard = [];
+var hand = [];
 // State
 var cubePressed = false;
 
@@ -150,10 +150,6 @@ function pressCube() {
   return cubeNumber;
 }
 
-//function setPlayerCubeNumber(num) {
-  //cubeNumber = num;
-//}
-
 function shuffle() {
   let shuffledCards = getCards().sort(() => Math.random() - 0.666);
   console.log(shuffledCards);
@@ -171,6 +167,19 @@ function chooseTakeOrRemove(num) {
   return texts[curState];
 }
 
+function takeToHand(cardIdx) {
+  let card = pantry.splice(cardIdx, 1);
+  hand.push(card);
+  newRound();
+  resetState();
+}
+
+function removeFromEntry(cardIdx) {
+  let card = pantry.splice(cardIdx, 1);
+  newRound();
+  resetState();
+}
+
 export {
   getRandomCubeNumber,
   prepareTable,
@@ -182,5 +191,7 @@ export {
   getCurrentState,
   chooseTakeOrRemove,
   newRound,
-  resetState
+  resetState,
+  takeToHand,
+  removeFromEntry
 };
