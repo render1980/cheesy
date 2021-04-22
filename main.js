@@ -9,10 +9,12 @@ import {
   pressCube,
   chooseTakeOrRemove,
   newRound,
+  resetState,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
 var ctx = canvas.getContext("2d");
+var hintsEnabled = true;
 // objects parameters
 const PANTRY_SIZE = 6;
 const CUBE_X = 10;
@@ -21,6 +23,7 @@ const CUBE_WIDTH = 40;
 const CUBE_LENGTH = 40;
 const CARD_WIDTH = 60;
 const CARD_LENGTH = 80;
+const PANTRY_OFFSET = 10;
 
 main();
 
@@ -43,6 +46,9 @@ function addDocumentEventListeners() {
 }
 
 function drawText(text) {
+  if (!hintsEnabled) {
+    return;
+  }
   document.getElementById("text").innerText = text;
 }
 
@@ -73,7 +79,6 @@ function drawCube(num) {
 function drawPantry() {
   const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
   const PANTRY_Y = CUBE_Y;
-  const PANTRY_OFFSET = 10;
   var x = PANTRY_X;
   for (var i = 0; i < PANTRY_SIZE; i++) {
     drawCardNum(x, PANTRY_Y, getPantry()[i].value);
@@ -92,6 +97,36 @@ function drawCardNum(x, y, num) {
   img.src = "./images/card" + num + ".png";
 }
 
+function drawCardNumHighlighted(x, y, num) {
+  var img = new Image(CARD_WIDTH, CARD_LENGTH);
+  img.onload = function () {
+    ctx.drawImage(img, x, y);
+    ctx.beginPath();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(x, y, CARD_WIDTH, CARD_LENGTH);
+  };
+  img.src = "./images/card" + num + ".png";
+}
+
+function drawCardBottom(x, y, isCatch) {
+  var img = new Image(CARD_WIDTH, CARD_LENGTH);
+  img.onload = function () {
+    ctx.drawImage(img, x, y);
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(x, y, CARD_WIDTH, CARD_LENGTH);
+  };
+  var name;
+  if (isCatch) {
+    name = "catch";
+  } else {
+    name = "cheese";
+  }
+  img.src = "./images/card_" + name + ".png";
+}
+
 // HANDLERS
 function onMouseClick() {
   if (getCubePressed()) {
@@ -106,17 +141,18 @@ function onKeydown(event) {
   if (num < 1 || num > 6) {
     return;
   }
-  nextState(num);
+  next(num);
 }
 
-function nextState(num) {
+function next(num) {
   let curState = getCurrentState();
   switch (curState) {
     case 1:
       watchCard(num);
+      drawText(resetState());
       break;
     case 2:
-      chooseTakeOrRemove(num);
+      drawText(chooseTakeOrRemove(num));
       break;
     case 3:
       takeToHand(num);
@@ -132,24 +168,21 @@ function watchCard(num) {
   let cardIdxToWatch = num - 1;
   let cardToWatch = pantryCards[cardIdxToWatch];
   // get card coordinates
-  drawBorder(x, y, cardIdxToWatch);
-  // sleep 2
-  drawBottom(x, y, cardToWatch);
-  // sleep 3
-  drawCardNum(x, y, cardToWatch.value);
-}
+  const PANTRY_X = CUBE_X + CUBE_WIDTH + 50;
+  const PANTRY_Y = CUBE_Y;
+  let cardX =
+    PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
+  setTimeout(function () {
+    drawCardNumHighlighted(cardX, PANTRY_Y, cardToWatch.value);
+  }, 2000);
 
-function drawBorder(x, y, idx) {
-  // calculate coordinates of the card and draw a border around it
-}
+  setTimeout(function () {
+    drawCardBottom(cardX, PANTRY_Y, cardToWatch.catch);
+  }, 3000);
 
-function drawBottom(x, y, card) {
-  let isCatch = card.catch;
-  if (isCatch) {
-    // draw a card with catch
-  } else {
-    // draw a card without catch
-  }
+  setTimeout(function () {
+    drawCardNum(cardX, PANTRY_Y, cardToWatch.value);
+  }, 1000);
 }
 
 function takeToHand(num) {

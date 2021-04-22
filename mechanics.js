@@ -38,8 +38,8 @@ const cards = [
 ];
 
 const texts = [
-  "Hi! Let's play the Cheesy! \
-  Here will be hints. \
+  "Hi! Let's play the Cheesy!\n\
+  Here will be hints.\n\
   First, roll the dice! Press mouse to do it.",
 
   "Great! Now you can take any card from pantry and watch it.\n\
@@ -103,6 +103,11 @@ function getCurrentText() {
 
 function getCurrentState() {
   return curState;
+}
+
+function resetState() {
+  curState = 0;
+  return texts[curState];
 }
 
 function getCards() {
@@ -176,5 +181,6 @@ export {
   getCurrentText,
   getCurrentState,
   chooseTakeOrRemove,
-  newRound
+  newRound,
+  resetState
 };
