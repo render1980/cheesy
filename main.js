@@ -92,6 +92,7 @@ function drawCardNum(x, y, num) {
     ctx.drawImage(img, x, y);
     ctx.beginPath();
     ctx.lineWidth = 2;
+    ctx.strokeStyle = "none";
     ctx.strokeRect(x, y, CARD_WIDTH, CARD_LENGTH);
   };
   img.src = "./images/card" + num + ".png";
@@ -174,7 +175,7 @@ function watchCard(num) {
     PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
   setTimeout(function () {
     drawCardNumHighlighted(cardX, PANTRY_Y, cardToWatch.value);
-  }, 2000);
+  }, 1000);
 
   setTimeout(function () {
     drawCardBottom(cardX, PANTRY_Y, cardToWatch.catch);
@@ -182,7 +183,7 @@ function watchCard(num) {
 
   setTimeout(function () {
     drawCardNum(cardX, PANTRY_Y, cardToWatch.value);
-  }, 1000);
+  }, 5000);
 }
 
 function takeToHand(num) {
