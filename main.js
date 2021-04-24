@@ -9,7 +9,6 @@ import {
   pressCube,
   chooseTakeOrRemove,
   newRound,
-  resetState,
   takeToHand,
   removeFromEntry,
 } from "./mechanics.js";
@@ -48,11 +47,6 @@ function main() {
   );
 
   addDocumentEventListeners();
-}
-
-function addDocumentEventListeners() {
-  document.addEventListener("mousedown", onMouseClick, false);
-  document.addEventListener("keydown", onKeydown, false);
 }
 
 function drawText(text) {
@@ -97,7 +91,7 @@ function drawPantry() {
 function drawCardNum(x, y, num) {
   var img = new Image(CARD_WIDTH, CARD_LENGTH);
   img.onload = function () {
-    clearCard(x, y);
+    drawClearCard(x, y);
     ctx.drawImage(img, x, y);
     ctx.beginPath();
     ctx.lineWidth = 2;
@@ -137,49 +131,13 @@ function drawCardBottom(x, y, isCatch) {
   img.src = "./images/card_" + name + ".png";
 }
 
-function clearCard(x, y) {
+function drawClearCard(x, y) {
   ctx.clearRect(
     x - 2,
     y - 2,
     CARD_WIDTH + HIGHLIGHTED_CARD_BORDER_WIDTH,
     CARD_LENGTH + HIGHLIGHTED_CARD_BORDER_WIDTH
   );
-}
-
-// HANDLERS
-function onMouseClick() {
-  if (getCubePressed()) {
-    return;
-  }
-  drawCube(pressCube());
-  drawText(getCurrentText());
-}
-
-function onKeydown(event) {
-  let num = event.keyCode - 48;
-  if (num < 1 || num > 6) {
-    return;
-  }
-  next(num);
-}
-
-function next(num) {
-  let curState = getCurrentState();
-  switch (curState) {
-    case 1:
-      drawWatchCard(num);
-      drawText(resetState());
-      break;
-    case 2:
-      drawText(chooseTakeOrRemove(num));
-      break;
-    case 3:
-      drawTakeToHand(num);
-      break;
-    case 4:
-      drawRemove(num);
-      break;
-  }
 }
 
 function drawWatchCard(num) {
@@ -210,7 +168,7 @@ function drawTakeToHand(num) {
   let cardX =
     PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
   // clear card in pantry
-  clearCard(cardX, PANTRY_Y);
+  drawClearCard(cardX, PANTRY_Y);
   // draw card in a hand
   drawCardBottom(HAND_X, HAND_Y, cardToTake.catch);
   takeToHand(cardIdxToTake);
@@ -222,10 +180,58 @@ function drawRemove(num) {
   let cardIdxToTake = num - 1;
   let cardToRemove = pantryCards[cardIdxToTake];
   let cardX =
-    PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
+    PANTRY_X + CARD_WIDTH * cardIdxToTake + PANTRY_OFFSET * cardIdxToTake;
   // clear card in pantry
-  clearCard(cardX, PANTRY_Y);
+  setTimeout(function () {
+    drawCardNumHighlighted(cardX, PANTRY_Y, cardToRemove.value);
+  }, 1000);
+  setTimeout(function () {
+    drawClearCard(cardX, PANTRY_Y);
+  }, 3000);
   removeFromEntry(cardIdxToTake);
+  let pantry = getPantry();
+  let newCard = pantry[pantry.length - 1];
+  setTimeout(function () {
+    drawCardNum(cardX, PANTRY_Y, newCard.value);
+  }, 5000);
   // draw new card in pantry taken from deck
   drawText(getCurrentText());
+}
+
+// HANDLERS
+function addDocumentEventListeners() {
+  document.addEventListener("mousedown", onMouseClick, false);
+  document.addEventListener("keydown", onKeydown, false);
+}
+
+function onMouseClick() {
+  if (getCubePressed()) {
+    return;
+  }
+  drawCube(pressCube());
+  drawText(getCurrentText());
+}
+
+function onKeydown(event) {
+  let num = event.keyCode - 48;
+  if (num < 1 || num > 6) {
+    return;
+  }
+  let curState = getCurrentState();
+  switch (curState) {
+    case 1:
+      drawWatchCard(num);
+      newRound();
+      drawText(getCurrentText());
+      break;
+    case 2:
+      drawText(chooseTakeOrRemove(num));
+      break;
+    case 3:
+      drawTakeToHand(num);
+      break;
+    case 4:
+      drawRemove(num);
+      break;
+  }
 }

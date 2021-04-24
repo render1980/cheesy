@@ -91,7 +91,7 @@ function newRound() {
   let pantryCards = getPantry();
   if (pantryCards.length < PANTRY_CARDS_COUNT) {
     for (var i = 0; i < PANTRY_CARDS_COUNT - pantryCards.length; i++) {
-      newCard = deck.pop();
+      let newCard = deck.pop();
       pantry.push(newCard);
     }
   }
@@ -103,11 +103,6 @@ function getCurrentText() {
 
 function getCurrentState() {
   return curState;
-}
-
-function resetState() {
-  curState = 0;
-  return texts[curState];
 }
 
 function getCards() {
@@ -171,13 +166,12 @@ function takeToHand(cardIdx) {
   let card = pantry.splice(cardIdx, 1);
   hand.push(card);
   newRound();
-  resetState();
 }
 
-function removeFromEntry(cardIdx) {
+function removeFromPantry(cardIdx) {
   let card = pantry.splice(cardIdx, 1);
+  console.log('remove from pantry: %o', card);
   newRound();
-  resetState();
 }
 
 export {
@@ -191,7 +185,6 @@ export {
   getCurrentState,
   chooseTakeOrRemove,
   newRound,
-  resetState,
   takeToHand,
-  removeFromEntry
+  removeFromPantry as removeFromEntry
 };
