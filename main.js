@@ -10,7 +10,7 @@ import {
   chooseTakeOrRemove,
   newRound,
   takeToHand,
-  removeFromEntry,
+  removeFromPantry,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
@@ -31,6 +31,7 @@ const CARD_LENGTH = 80;
 const HIGHLIGHTED_CARD_BORDER_WIDTH = 4;
 const HAND_Y = CUBE_Y * 2 + CARD_LENGTH;
 const HAND_X = PANTRY_X;
+const HAND_CARDS_OFFSET = CARD_WIDTH + PANTRY_OFFSET;
 
 main();
 
@@ -166,35 +167,54 @@ function drawTakeToHand(num) {
   let cardToTake = pantryCards[cardIdxToTake];
   // calc coordinates of the card in pantry
   let cardX =
-    PANTRY_X + CARD_WIDTH * cardIdxToWatch + PANTRY_OFFSET * cardIdxToWatch;
-  // clear card in pantry
-  drawClearCard(cardX, PANTRY_Y);
-  // draw card in a hand
-  drawCardBottom(HAND_X, HAND_Y, cardToTake.catch);
+    PANTRY_X + CARD_WIDTH * cardIdxToTake + PANTRY_OFFSET * cardIdxToTake;
+  setTimeout(function () {
+    drawCardNumHighlighted(cardX, PANTRY_Y, cardToTake.value);
+  }, 1000);
+  setTimeout(function () {
+    drawClearCard(cardX, PANTRY_Y);
+  }, 3000);
+
+  setTimeout(function () {
+    drawOnHand(cardToTake);
+  }, 5000);
+
+  takeToHand(cardIdxToTake);
+  let pantry = getPantry();
+  let newCard = pantry[pantry.length - 1];
+  setTimeout(function () {
+    drawCardNum(cardX, PANTRY_Y, newCard.value);
+  }, 7000);
   takeToHand(cardIdxToTake);
   drawText(getCurrentText());
 }
 
+function drawOnHand(cardToTake) {
+  if (cardToTake.catch) {
+    drawCardBottom(HAND_X, HAND_Y, cardToTake.catch);
+  } else {
+    drawCardBottom(HAND_X + HAND_CARDS_OFFSET, HAND_Y, cardToTake.catch);
+  }
+}
+
 function drawRemove(num) {
   let pantryCards = getPantry();
-  let cardIdxToTake = num - 1;
-  let cardToRemove = pantryCards[cardIdxToTake];
+  let cardIdxToRemove = num - 1;
+  let cardToRemove = pantryCards[cardIdxToRemove];
   let cardX =
-    PANTRY_X + CARD_WIDTH * cardIdxToTake + PANTRY_OFFSET * cardIdxToTake;
-  // clear card in pantry
+    PANTRY_X + CARD_WIDTH * cardIdxToRemove + PANTRY_OFFSET * cardIdxToRemove;
   setTimeout(function () {
     drawCardNumHighlighted(cardX, PANTRY_Y, cardToRemove.value);
   }, 1000);
   setTimeout(function () {
     drawClearCard(cardX, PANTRY_Y);
   }, 3000);
-  removeFromEntry(cardIdxToTake);
+  removeFromPantry(cardIdxToRemove);
   let pantry = getPantry();
   let newCard = pantry[pantry.length - 1];
   setTimeout(function () {
     drawCardNum(cardX, PANTRY_Y, newCard.value);
   }, 5000);
-  // draw new card in pantry taken from deck
   drawText(getCurrentText());
 }
 

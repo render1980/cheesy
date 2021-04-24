@@ -169,9 +169,12 @@ function takeToHand(cardIdx) {
 }
 
 function removeFromPantry(cardIdx) {
+  console.log('pantry before removing: %o', pantry);
   let card = pantry.splice(cardIdx, 1);
   console.log('remove from pantry: %o', card);
+  console.log('pantry after removing: %o', pantry);
   newRound();
+  console.log('deck after new round: %o', deck);
 }
 
 export {
@@ -186,5 +189,5 @@ export {
   chooseTakeOrRemove,
   newRound,
   takeToHand,
-  removeFromPantry as removeFromEntry
+  removeFromPantry
 };
