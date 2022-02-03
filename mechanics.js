@@ -42,7 +42,7 @@ const texts = [
   Roll the dice! Press mouse to do it.",
 
   "Great! Now you can take any card from pantry and watch it.\n\
-  Please, press a keyboard button [1..6] that is the card position (from the left).",
+  Please, press a keyboard button [1..6] that is the target card position (from the left).",
 
   "Great! There is at least one card in pantry which value is related to the cube value. \
   You can choose any of two options: \n\
@@ -74,6 +74,7 @@ var discard = [];
 var hand = [];
 // State
 var cubePressed = false;
+var cubeValue = 0;
 
 
 function prepareTable() {
@@ -129,12 +130,21 @@ function setCubePressed(pressed) {
   cubePressed = pressed;
 }
 
+function setCubeValue(value) {
+  cubeValue = value;
+}
+
+function getCubeValue() {
+  return cubeValue;
+}
+
 function pressCube() {
   setCubePressed(true);
-  let cubeNumber = getRandomCubeNumber();
+  let cubeValue = getRandomCubeNumber()
+  setCubeValue(cubeValue);
   //setPlayerCubeNumber(cubeNumber);
   // When cube is pressed, check if any card with {cubeNumber} in pantry exists
-  let pantryCardsWithCubeValue = getPantry().filter(v => v.value == cubeNumber);
+  let pantryCardsWithCubeValue = getPantry().filter(v => v.value == cubeValue);
   if (pantryCardsWithCubeValue.length > 0) {
     // Player can take related card to hand or remove it from the game
     curState += 2;
@@ -142,7 +152,7 @@ function pressCube() {
     // Player should take any card from pantry and watch it
     curState += 1;
   }
-  return cubeNumber;
+  return cubeValue;
 }
 
 function shuffle() {
@@ -189,5 +199,6 @@ export {
   chooseTakeOrRemove,
   newRound,
   takeToHand,
-  removeFromPantry
+  removeFromPantry,
+  getCubeValue
 };

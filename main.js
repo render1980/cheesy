@@ -4,6 +4,7 @@ import {
   getPantry,
   getDeck,
   getCubePressed,
+  getCubeValue,
   getCurrentText,
   getCurrentState,
   pressCube,
@@ -165,6 +166,11 @@ function drawTakeToHand(num) {
   let pantryCards = getPantry();
   let cardIdxToTake = num - 1;
   let cardToTake = pantryCards[cardIdxToTake];
+
+  if (cardToTake.value != getCubeValue()) {
+    return;
+  }
+
   // calc coordinates of the card in pantry
   let cardX =
     PANTRY_X + CARD_WIDTH * cardIdxToTake + PANTRY_OFFSET * cardIdxToTake;
@@ -179,9 +185,9 @@ function drawTakeToHand(num) {
     drawOnHand(cardToTake);
   }, 5000);
 
-  takeToHand(cardIdxToTake);
-  let pantry = getPantry();
-  let newCard = pantry[pantry.length - 1];
+  //takeToHand(cardIdxToTake);
+  let deck = getDeck();
+  let newCard = deck[deck.length - 1];
   setTimeout(function () {
     drawCardNum(cardX, PANTRY_Y, newCard.value);
   }, 7000);
@@ -201,6 +207,11 @@ function drawRemove(num) {
   let pantryCards = getPantry();
   let cardIdxToRemove = num - 1;
   let cardToRemove = pantryCards[cardIdxToRemove];
+
+  if (cardToRemove.value != getCubeValue()) {
+    return;
+  }
+
   let cardX =
     PANTRY_X + CARD_WIDTH * cardIdxToRemove + PANTRY_OFFSET * cardIdxToRemove;
   setTimeout(function () {
@@ -210,8 +221,8 @@ function drawRemove(num) {
     drawClearCard(cardX, PANTRY_Y);
   }, 3000);
   removeFromPantry(cardIdxToRemove);
-  let pantry = getPantry();
-  let newCard = pantry[pantry.length - 1];
+  let deck = getDeck();
+  let newCard = deck[deck.length - 1];
   setTimeout(function () {
     drawCardNum(cardX, PANTRY_Y, newCard.value);
   }, 5000);
