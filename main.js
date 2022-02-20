@@ -12,6 +12,7 @@ import {
   newRound,
   takeToHand,
   removeFromPantry,
+  checkGameOver,
 } from "./mechanics.js";
 
 var canvas = document.getElementById("cheesyCanvas");
@@ -236,6 +237,12 @@ function addDocumentEventListeners() {
 }
 
 function onMouseClick() {
+  if (getCurrentState() == 5) {
+    main();
+    newRound();
+    return;
+  }
+
   if (getCubePressed()) {
     return;
   }
@@ -249,6 +256,7 @@ function onKeydown(event) {
     return;
   }
   let curState = getCurrentState();
+  let gameOver = false;
   switch (curState) {
     case 1:
       drawWatchCard(num);
@@ -260,9 +268,17 @@ function onKeydown(event) {
       break;
     case 3:
       drawTakeToHand(num);
+      gameOver = checkGameOver();
+      if (gameOver) {
+        drawText(getCurrentText());
+      }
       break;
     case 4:
       drawRemove(num);
+      gameOver = checkGameOver();
+      if (gameOver) {
+        drawText(getCurrentText());
+      }
       break;
   }
 }

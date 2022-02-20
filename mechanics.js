@@ -54,10 +54,13 @@ const texts = [
   of the card you want to take to your hand.",
 
   "Please, press a keyboard button [1..6] that is the position (from the left)\n\
-  of the card you want to remove from the game."
+  of the card you want to remove from the game.",
+
+  "Game over! Press mouse to start again."
 ];
 
 const PANTRY_CARDS_COUNT = 6;
+const TRAPS_COUNT = 3;
 
 /**
 * 0 - Beginning of the round
@@ -76,26 +79,54 @@ var hand = [];
 var cubePressed = false;
 var cubeValue = 0;
 
-
+/**
+* Start a new game:
+* 1. Shuffle the cards
+* 2. Fill the pantry
+* 3. Fill the deck
+*/
 function prepareTable() {
   var cards = shuffle();
   // first 6 -> Pantry
-  pantry = cards.slice(0, 6);
+  pantry = cards.slice(0, PANTRY_CARDS_COUNT);
   // others -> Deck
-  deck = cards.slice(6, cards.length);
+  deck = cards.slice(PANTRY_CARDS_COUNT, cards.length);
 }
 
+/**
+* Start new round:
+* 1. Reset the state of the previous round
+* 2. Refill the pantry from the deck
+*
+* @returns void
+*/
 function newRound() {
   curState = 0;
   cubePressed = false;
   // if pantry hasn't got enough cards => put required amount of cards to the pantry
   let pantryCards = getPantry();
-  if (pantryCards.length < PANTRY_CARDS_COUNT) {
+  if (pantryCards.length < PANTRY_CARDS_COUNT && deck.length > 0) {
     for (var i = 0; i < PANTRY_CARDS_COUNT - pantryCards.length; i++) {
       let newCard = deck.pop();
       pantry.push(newCard);
     }
   }
+}
+
+/**
+* The game is over if:
+* 1. No any cards in pantry OR
+* 2. Any player got three traps
+*
+* @returns true if game have to be finished; false - otherwise.
+*/
+function checkGameOver() {
+  let catchesOnHand = hand.filter(c => c.catch == true);
+  let isGameOver = deck.length < 0 || catchesOnHand.length >= TRAPS_COUNT;
+  if (isGameOver) {
+    curState = 5;
+  }
+  return isGameOver;
 }
 
 function getCurrentText() {
@@ -138,6 +169,13 @@ function getCubeValue() {
   return cubeValue;
 }
 
+/**
+* Press the cube and define the next state based on the cube value.
+* If there is a similar value in any of cards in the pantry,
+* move to the state 2: let's take to the hand or remove the related card.
+*
+* Otherwise - move to the state 1: let's watch any card in the pantry.
+* */
 function pressCube() {
   setCubePressed(true);
   let cubeValue = getRandomCubeNumber()
@@ -200,5 +238,6 @@ export {
   newRound,
   takeToHand,
   removeFromPantry,
-  getCubeValue
+  getCubeValue,
+  checkGameOver,
 };

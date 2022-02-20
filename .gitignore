@@ -18,3 +18,5 @@ node_modules/
 .nvimlog
 
 package-lock.json
+dist/
+.eslintrc.cjs
